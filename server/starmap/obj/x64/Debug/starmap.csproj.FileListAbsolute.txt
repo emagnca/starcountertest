@@ -1,0 +1,8 @@
+C:\Users\Magnus Carlhammar\proj\starmap\server\src\starmap\starmap\bin\Debug\starmap.exe
+C:\Users\Magnus Carlhammar\proj\starmap\server\src\starmap\starmap\bin\Debug\starmap.pdb
+C:\Users\Magnus Carlhammar\proj\starmap\server\src\starmap\starmap\obj\x64\Debug\starmap.exe
+C:\Users\Magnus Carlhammar\proj\starmap\server\src\starmap\starmap\obj\x64\Debug\starmap.pdb
+C:\Users\Magnus Carlhammar\proj\starmap\server\starmap\bin\Debug\starmap.exe
+C:\Users\Magnus Carlhammar\proj\starmap\server\starmap\bin\Debug\starmap.pdb
+C:\Users\Magnus Carlhammar\proj\starmap\server\starmap\obj\x64\Debug\starmap.exe
+C:\Users\Magnus Carlhammar\proj\starmap\server\starmap\obj\x64\Debug\starmap.pdb
