@@ -3,7 +3,8 @@ using Starcounter;
 
 namespace starmap.Model
 {
-    class Position
+    [Database]
+    public class Position
     {
         public TrackingObject trackingObject;
         public long latitude;
