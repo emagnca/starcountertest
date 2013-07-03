@@ -1,0 +1,1 @@
+SQLserver implementation of starmap

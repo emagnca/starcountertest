@@ -1,0 +1,8 @@
+$(document).ready(function(){
+	if(!"WebSocket" in window){
+	    alert("has websockets");
+	}
+	else{
+	    alert("no websockets");
+	}
+}
