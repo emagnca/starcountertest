@@ -9,6 +9,8 @@ namespace starmap.Models
         public string name;
         public TrackingGroup group;
         public Boolean isConnected;
+        public long currentLatitude;
+        public long currentLongitude;
         public DateTime lastUpdate;
     }
 }

@@ -1,4 +1,6 @@
-﻿using starmap.Services.Interfaces;
+﻿using Starcounter;
+using starmap.Services.Interfaces;
+using starmap.Models;
 using System.Collections;
 
 namespace starmap.Services.Implementations
@@ -45,9 +47,9 @@ namespace starmap.Services.Implementations
             return returnCode;
         }
 
-        public IEnumerable getPositionsForGroup(string group)
+        public IEnumerable getActiveUsersForGroup(string group)
         {
-            return delegateService.getPositionsForGroup(group);
+            return delegateService.getActiveUsersForGroup(group);
         }
     }
 }

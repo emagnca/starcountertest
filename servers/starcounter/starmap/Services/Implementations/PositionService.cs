@@ -3,6 +3,7 @@ using starmap.Models;
 using Starcounter;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Net;
 
 namespace starmap.Services.Implementations
@@ -11,6 +12,7 @@ namespace starmap.Services.Implementations
     {
 
         public const int HTTP_OK = 200;
+        public const int HTTP_BAD_REQUEST = 400;
         public const int HTTP_NOT_FOUND = 404;
         public const int HTTP_CONFLICT = 409;
 
@@ -46,31 +48,34 @@ namespace starmap.Services.Implementations
 
             Db.Transaction(() =>
             {
-               TrackingObject t = Db.SQL("SELECT * FROM TrackingObject T WHERE T.Name=?", user.Name).First;   
-               TrackingGroup g = Db.SQL("SELECT * FROM TrackingGroup WHERE Name=?", user.Group).First;
+               TrackingObject t = Db.SQL<TrackingObject>("SELECT * FROM TrackingObject T WHERE T.Name=?", user.Name).First;   
+               TrackingGroup g = Db.SQL<TrackingGroup>("SELECT * FROM TrackingGroup WHERE Name=?", user.Group).First;
 
                if (t != null) httpReturnCode = HTTP_CONFLICT;
-
-               if (g == null)
-                {
-                    g = new TrackingGroup()
-                    {
-                        name = user.Group,
-                        numberOfCurrentUsers = 0,
-                        numberOfUpdates = 0
-                    };
-                }
-
-               t = new TrackingObject()
+               else if (!t.isConnected) httpReturnCode = HTTP_BAD_REQUEST;
+               else
                {
-                   name = user.Name,
-                   isConnected = false,
-                   lastUpdate = DateTime.Now,
-                   group = g
-               };
+                   if (g == null)
+                   {
+                       g = new TrackingGroup()
+                       {
+                           name = user.Group,
+                           numberOfCurrentUsers = 0,
+                           numberOfUpdates = 0
+                       };
+                   }
 
-                g.numberOfCurrentUsers++;
-                g.numberOfUpdates++;
+                   t = new TrackingObject()
+                   {
+                       name = user.Name,
+                       isConnected = true,
+                       lastUpdate = DateTime.Now,
+                       group = g
+                   };
+
+                   g.numberOfCurrentUsers++;
+                   g.numberOfUpdates++;
+               }
             });
 
             return httpReturnCode;
@@ -78,23 +83,22 @@ namespace starmap.Services.Implementations
 
         public int deregister(UserMsg user)
         {
-            TrackingGroup t = Db.SQL("SELECT * FROM TrackingObject T WHERE T.Name=?", user.Name).First;
-            TrackingGroup g = Db.SQL("SELECT * FROM TrackingGroup WHERE Name=?", user.Group).First;
+            TrackingObject t = Db.SQL<TrackingObject>("SELECT * FROM TrackingObject T WHERE T.Name=?", user.Name).First;
+            TrackingGroup g = Db.SQL<TrackingGroup>("SELECT * FROM TrackingGroup WHERE Name=?", user.Group).First;
 
             if (t != null)
             {
-                t.Delete();
+                t.isConnected = false;
                 g.numberOfCurrentUsers--;
-                if (g.numberOfCurrentUsers <= 0) g.Delete();
             }
 
             return HTTP_OK;
         }
 
-        public IEnumerable getPositionsForGroup(string group)
+        public IEnumerable getActiveUsersForGroup(string group)
         {
-            // TBD
-            return null;
+            TrackingGroup g = Db.SQL<TrackingGroup>("SELECT * FROM TrackingGroup WHERE Name=?", group).First;
+            return g.activeUsers;
         }
 
     }

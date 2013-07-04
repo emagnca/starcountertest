@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using Starcounter;
 using starmap.Services.Interfaces;
 
@@ -17,11 +18,6 @@ namespace starmap.Controllers
 
         public void SetupUrls()
         {
-            Handle.GET(SERVER_PORT, "/position", () =>
-            {
-                return 200;
-            });
-
              Handle.POST(SERVER_PORT, "/position", (PositionMsg message) => 
              {
                  return service.updatePostion(message);
@@ -34,9 +30,17 @@ namespace starmap.Controllers
 
             Handle.POST(SERVER_PORT, "/deregister", (UserMsg user) =>
             {
-                return 200;
+                return service.deregister(user);
             });
 
+            Handle.GET(SERVER_PORT, "/position", (string group) =>
+            {
+                // TODO: HOW?
+                var json = new ActiveUsersMsg();
+                IEnumerable e = service.getActiveUsersForGroup(group);
+                // json.Data = e;
+                return json;
+            });
         }
             
     }

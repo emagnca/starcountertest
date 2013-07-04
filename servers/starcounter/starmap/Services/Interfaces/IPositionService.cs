@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Starcounter;
+using System.Collections;
 
 namespace starmap.Services.Interfaces
 {
@@ -7,6 +8,6 @@ namespace starmap.Services.Interfaces
         int updatePostion(PositionMsg position);
         int register(UserMsg user);
         int deregister(UserMsg user);
-        IEnumerable getPositionsForGroup(string group);
+        IEnumerable getActiveUsersForGroup(string group);
     }
 }
