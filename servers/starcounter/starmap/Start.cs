@@ -5,7 +5,7 @@ using starmap.Controllers;
 class Start
 {
 
-    static IPositionService service = new PositionServiceLoadTest();
+    static IPositionService service = new PositionService();
     static PositionController controller = new PositionController(service);
 
     static void Main()

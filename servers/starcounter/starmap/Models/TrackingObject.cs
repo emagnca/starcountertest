@@ -7,7 +7,7 @@ namespace starmap.Models
     public class TrackingObject
     {
         public string name;
-        public Group group;
+        public TrackingGroup group;
         public Boolean isConnected;
         public DateTime lastUpdate;
     }

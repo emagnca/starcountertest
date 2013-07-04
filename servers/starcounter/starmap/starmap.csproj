@@ -55,7 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\PositionController.cs" />
-    <Compile Include="Models\Group.cs" />
+    <Compile Include="Models\TrackingGroup.cs" />
     <Compile Include="Models\Position.cs" />
     <Compile Include="Models\TrackingObject.cs" />
     <Compile Include="Services\Implementations\PositionServiceLoadTest.cs" />
@@ -69,6 +69,11 @@
   </ItemGroup>
   <ItemGroup>
     <TypedJSON Include="Services\Messages\PositionMsg.json">
+      <Generator>MsBuild:Compile</Generator>
+    </TypedJSON>
+  </ItemGroup>
+  <ItemGroup>
+    <TypedJSON Include="Services\Messages\UserMsg.json">
       <Generator>MsBuild:Compile</Generator>
     </TypedJSON>
   </ItemGroup>
