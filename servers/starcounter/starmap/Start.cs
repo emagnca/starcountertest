@@ -1,15 +1,15 @@
-﻿using System;
-using Starcounter;
-using starmap.Model;
+﻿using starmap.Services.Interfaces;
+using starmap.Services.Implementations;
+using starmap.Controllers;
 
 class Start
 {
+
+    static IPositionService service = new PositionServiceLoadTest();
+    static PositionController controller = new PositionController(service);
+
     static void Main()
     {
-        Db.Transaction(() =>
-        {
-            var o = new TrackingObject() { FirstName = "Albert", LastName = "Einstein" };
-            new Quote() { Person = albert, Text = "Make things as simple as possible, but not simpler" };
-        });
+        controller.SetupUrls();
     }
 }

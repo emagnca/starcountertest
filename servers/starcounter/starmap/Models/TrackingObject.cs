@@ -1,12 +1,14 @@
 ﻿using System;
 using Starcounter;
 
-namespace starmap.Model
+namespace starmap.Models
 {
     [Database]
-    class TrackingObject
+    public class TrackingObject
     {
         public string name;
+        public Group group;
+        public Boolean isConnected;
         public DateTime lastUpdate;
     }
 }
