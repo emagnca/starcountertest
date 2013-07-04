@@ -1,6 +1,7 @@
 {
    $:{DataType:"starmap.Models.Position"},
    Name: "",
+   Group: "",
    Latitude: 0,
    Longitude: 0
 }

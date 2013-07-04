@@ -27,16 +27,18 @@ namespace starmap.Services.Implementations
                                             position.Name).First;
 
                 if (t == null || t.group == null) httpReturnCode = HTTP_NOT_FOUND;
-
-                new Position()
+                else
                 {
-                    trackingObject = t,
-                    latitude = position.Latitude,
-                    longitude = position.Longitude,
-                    timestamp = DateTime.Now
-                };
+                    new Position()
+                    {
+                        trackingObject = t,
+                        latitude = position.Latitude,
+                        longitude = position.Longitude,
+                        timestamp = DateTime.Now
+                    };
 
-                t.group.numberOfUpdates++;
+                    t.group.numberOfUpdates++;
+                }
              });
 
             return httpReturnCode;

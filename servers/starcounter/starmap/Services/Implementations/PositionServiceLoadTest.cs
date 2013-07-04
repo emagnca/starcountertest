@@ -9,7 +9,7 @@ namespace starmap.Services.Implementations
     {
         IPositionService delegateService = new PositionService();
 
-        const int LOOPS = 2;
+        const int LOOPS = 100;
 
         public int updatePostion(PositionMsg position)
         {
@@ -25,26 +25,12 @@ namespace starmap.Services.Implementations
 
         public int register(UserMsg user)
         {
-            int returnCode = 200;
-
-            for (int i = 0; i < LOOPS; i++)
-            {
-                returnCode = delegateService.register(user);
-            }
-
-            return returnCode;
+            return delegateService.register(user);
         }
 
         public int deregister(UserMsg user)
         {
-            int returnCode = 200;
-
-            for (int i = 0; i < LOOPS; i++)
-            {
-                returnCode = delegateService.deregister(user);
-            }
-
-            return returnCode;
+            return delegateService.deregister(user);
         }
 
         public IEnumerable getActiveUsersForGroup(string group)
