@@ -9,7 +9,7 @@ using Starcounter;
 using Starcounter.Internal;
 using Starcounter.Templates;
 
-public class PositionMsg : Json {
+public class PositionMsg : Json<starmap.Models.Position> {
     public static TPositionMsg DefaultTemplate = new TPositionMsg();
     public PositionMsg() { Template = DefaultTemplate; }
     public PositionMsg(TPositionMsg template) { Template = template; }
@@ -21,6 +21,7 @@ public class PositionMsg : Json {
     public class TPositionMsg : TJson {
         public TPositionMsg()
             : base() {
+            BindChildren = true;
             InstanceType = typeof(PositionMsg);
             ClassName = "PositionMsg";
             Name = Add<TString>("Name");

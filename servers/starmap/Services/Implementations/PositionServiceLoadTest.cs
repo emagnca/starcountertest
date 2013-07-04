@@ -4,9 +4,10 @@ namespace starmap.Services.Implementations
 {
     public class PositionServiceLoadTest : IPositionService
     {
-        public void updatePostion(PositionMsg position)
+        public int  updatePostion(PositionMsg position)
         {
             System.Console.WriteLine("Tracking object: " + position.Name);
+            return 0;
         }
     }
 }

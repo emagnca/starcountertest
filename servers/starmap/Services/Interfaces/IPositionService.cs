@@ -2,6 +2,6 @@
 {
     public interface IPositionService
     {
-        void updatePostion(PositionMsg position);
+        int updatePostion(PositionMsg position);
     }
 }

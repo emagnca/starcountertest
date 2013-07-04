@@ -1,7 +1,7 @@
 ﻿using System;
 using Starcounter;
 
-namespace starmap.Model
+namespace starmap.Models
 {
     [Database]
     public class TrackingObject

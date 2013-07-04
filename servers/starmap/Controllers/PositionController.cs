@@ -17,17 +17,14 @@ namespace starmap.Controllers
 
         public void SetupUrls()
         {
-             Handle.POST(SERVER_PORT, "/position", (PositionMsg message) => {
-                 service.updatePostion(message);
-                 return "OK";
+             Handle.POST(SERVER_PORT, "/position", (PositionMsg message) => 
+             {
+                 return service.updatePostion(message);
              });
-        }
-
-        public void RegisterGroup()
-        {
-            Handle.POST(SERVER_PORT, "/group", (string group) =>
+                         
+            Handle.POST(SERVER_PORT, "/register", (string group) =>
             {
-                return "OK";
+                return 200;
             });
         }
             
