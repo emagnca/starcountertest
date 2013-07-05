@@ -37,7 +37,7 @@
       <hashTree>
         <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">true</boolProp>
-          <stringProp name="LoopController.loops">3</stringProp>
+          <stringProp name="LoopController.loops">1</stringProp>
         </LoopController>
         <hashTree>
           <CounterConfig guiclass="CounterConfigGui" testclass="CounterConfig" testname="Counter" enabled="true">
@@ -54,7 +54,7 @@
               <collectionProp name="Arguments.arguments">
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.value">{ &quot;FirstName&quot;:&quot;Magnus-${id}&quot;,&quot;LastName&quot;:&quot;Carlsen&quot;, &quot;Quotes&quot;: [ { &quot;Text&quot;:&quot;This is a quote&quot; } ] }</stringProp>
+                  <stringProp name="Argument.value">{ {&quot;Name&quot;:&quot;MyName-${id}&quot;, &quot;Group&quot;;&quot;MyGroup&quot;, &quot;Latitude&quot;:${id}, &quot;Longitude&quot;:${id} }&apos;</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                   <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
@@ -66,7 +66,7 @@
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
             <stringProp name="HTTPSampler.protocol"></stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">/persons</stringProp>
+            <stringProp name="HTTPSampler.path">/position</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
