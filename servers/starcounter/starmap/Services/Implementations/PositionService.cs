@@ -90,22 +90,23 @@ namespace starmap.Services.Implementations
 
         public int deregister(UserMsg user)
         {
+            Db.Transaction(() =>
+             {
+                 TrackingObject t = Db.SQL<TrackingObject>("SELECT T FROM TrackingObject T WHERE T.Name=?", user.Name).First;
+                 TrackingGroup g = Db.SQL<TrackingGroup>("SELECT T FROM TrackingGroup T WHERE T.Name=?", user.Group).First;
 
-            TrackingObject t = Db.SQL<TrackingObject>("SELECT T FROM TrackingObject T WHERE T.Name=?", user.Name).First;
-            TrackingGroup g = Db.SQL<TrackingGroup>("SELECT T FROM TrackingGroup T WHERE T.Name=?", user.Group).First;
-
-            if (t != null)
-            {
-                t.isConnected = false;
-                g.numberOfCurrentUsers--;
-            }
-
+                 if (t != null)
+                 {
+                     t.isConnected = false;
+                     g.numberOfCurrentUsers--;
+                 }
+             });
             return HTTP_OK;
         }
 
         public IEnumerable getActiveUsersForGroup(string group)
         {
-            TrackingGroup g = Db.SQL<TrackingGroup>("SELECT * FROM TrackingGroup WHERE Name=?", group).First;
+            TrackingGroup g = Db.SQL<TrackingGroup>("SELECT T FROM TrackingGroup T WHERE T.Name=?", group).First;
             return g.activeUsers;
         }
 
