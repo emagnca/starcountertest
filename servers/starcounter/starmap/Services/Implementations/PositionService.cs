@@ -23,8 +23,8 @@ namespace starmap.Services.Implementations
             Db.Transaction(() =>
             {
                 string name = position.Name;
-                TrackingObject t = Db.SQL("SELECT * FROM TrackingObject T WHERE T.Name=?", 
-                                            position.Name).First;
+                TrackingObject t = Db.SQL("SELECT T FROM TrackingObject T WHERE T.Name=?", 
+                                           position.Name).First;
 
                 if (t == null || t.group == null) httpReturnCode = HTTP_NOT_FOUND;
                 else
@@ -37,6 +37,8 @@ namespace starmap.Services.Implementations
                         timestamp = DateTime.Now
                     };
 
+                    t.currentLatitude = position.Latitude;
+                    t.currentLongitude = position.Longitude;
                     t.group.numberOfUpdates++;
                 }
              });
@@ -50,11 +52,14 @@ namespace starmap.Services.Implementations
 
             Db.Transaction(() =>
             {
-               TrackingObject t = Db.SQL<TrackingObject>("SELECT * FROM TrackingObject T WHERE T.Name=?", user.Name).First;   
-               TrackingGroup g = Db.SQL<TrackingGroup>("SELECT * FROM TrackingGroup WHERE Name=?", user.Group).First;
+               TrackingObject t = Db.SQL<TrackingObject>("SELECT T FROM TrackingObject T WHERE T.Name=?", user.Name).First;   
+               TrackingGroup g = Db.SQL<TrackingGroup>("SELECT T FROM TrackingGroup T WHERE T.Name=?", user.Group).First;
 
-               if (t != null) httpReturnCode = HTTP_CONFLICT;
-               else if (!t.isConnected) httpReturnCode = HTTP_BAD_REQUEST;
+               if (t != null)
+               {
+                   if (t.isConnected) httpReturnCode = HTTP_CONFLICT;
+                   else t.isConnected = true;
+               }
                else
                {
                    if (g == null)
@@ -85,8 +90,9 @@ namespace starmap.Services.Implementations
 
         public int deregister(UserMsg user)
         {
-            TrackingObject t = Db.SQL<TrackingObject>("SELECT * FROM TrackingObject T WHERE T.Name=?", user.Name).First;
-            TrackingGroup g = Db.SQL<TrackingGroup>("SELECT * FROM TrackingGroup WHERE Name=?", user.Group).First;
+
+            TrackingObject t = Db.SQL<TrackingObject>("SELECT T FROM TrackingObject T WHERE T.Name=?", user.Name).First;
+            TrackingGroup g = Db.SQL<TrackingGroup>("SELECT T FROM TrackingGroup T WHERE T.Name=?", user.Group).First;
 
             if (t != null)
             {
