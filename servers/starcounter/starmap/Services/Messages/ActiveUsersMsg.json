@@ -1,0 +1,8 @@
+{
+   TrackingObjects: [
+      { name : "",
+	    currentLatitude: "",
+		currentLongitude: "" }
+   ],
+	$TrackingObjects:{DataType:"starmap.Models.TrackingObject"}
+}
