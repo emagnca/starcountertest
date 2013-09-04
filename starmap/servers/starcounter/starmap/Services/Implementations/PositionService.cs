@@ -23,7 +23,7 @@ namespace starmap.Services.Implementations
             Db.Transaction(() =>
             {
                 string name = position.Name;
-                TrackingObject t = Db.SQL("SELECT T FROM TrackingObject T WHERE T.Name=?", 
+                TrackingObject t = (TrackingObject)Db.SQL("SELECT T FROM TrackingObject T WHERE T.Name=?", 
                                            position.Name).First;
 
                 if (t == null || t.group == null) httpReturnCode = HTTP_NOT_FOUND;
