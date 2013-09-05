@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace StarcounterMultiThreadTest01.Model
 {
     [Database]
-    class Person
+    public class Person
     {
         public long Id;
         public string FirstName;
