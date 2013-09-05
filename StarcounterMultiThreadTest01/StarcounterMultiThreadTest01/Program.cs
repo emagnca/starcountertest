@@ -8,9 +8,10 @@ namespace StarcounterMultiThreadTest01
 {
     class Program
     {
-        public const long maxId = 1000;
-        public const int winId = 10;
+        public const long maxId = 100000;
+        public const int winId =   25000;
         public const int numberofthreads = 4;
+        public const ushort SERVER_PORT = 8080;
         static void Main()
         {
             DbSession dbs = new DbSession();
@@ -21,17 +22,17 @@ namespace StarcounterMultiThreadTest01
             {
                 if (schedId < numberofthreads)
                 {
+                    dbs.RunAsync(DoWork1, schedId);
+                    schedId++;
+                }
+                if (schedId < numberofthreads)
+                {
                     dbs.RunAsync(DoWork2, schedId);
                     schedId++;
                 }
                 if (schedId < numberofthreads)
                 {
                     dbs.RunAsync(DoWork3, schedId);
-                    schedId++;
-                }
-                if (schedId < numberofthreads)
-                {
-                    dbs.RunAsync(DoWork1, schedId);
                     schedId++;
                 }
                 if (schedId < numberofthreads)
@@ -65,7 +66,7 @@ namespace StarcounterMultiThreadTest01
 
         static void DoWork2()
         {
-            Handle.GET("/list2", () =>
+            Handle.GET(SERVER_PORT, "/list2", () =>
             {
                 DbAdministration DbAdmin = new DbAdministration();
                 string text = "";
@@ -76,7 +77,6 @@ namespace StarcounterMultiThreadTest01
                 for (long id = 0; id < uplim; id++)
                 {
                     Person p = DbAdmin.DbGetPerson(id);
-                    //Person p = Db.SQL("SELECT P FROM Person P WHERE P.Id=?", id).First;
                     text += "Id: " + id + " Person: " + p.FullName + "<BR>";
                 }
                 return header + text;
@@ -85,7 +85,7 @@ namespace StarcounterMultiThreadTest01
 
         static void DoWork3()
         {
-            Handle.GET("/list3", () =>
+            Handle.GET(SERVER_PORT, "/list3", () =>
             {
                 DbAdministration DbAdmin = new DbAdministration();
                 string text = "";
@@ -97,7 +97,6 @@ namespace StarcounterMultiThreadTest01
                 for (long id = startlim; id < endlim; id++)
                 {
                     Person p = DbAdmin.DbGetPerson(id);
-                    //Person p = Db.SQL("SELECT P FROM Person P WHERE P.Id=?", id).First;
                     text += "Id: " + id + " Person: " + p.FullName + "<BR>";
                 }
                 return header + text;
@@ -106,7 +105,7 @@ namespace StarcounterMultiThreadTest01
 
         static void DoWork4()
         {
-            Handle.GET("/list4", () =>
+            Handle.GET(SERVER_PORT, "/list4", () =>
             {
                 DbAdministration DbAdmin = new DbAdministration();
                 string text = "";
@@ -119,7 +118,6 @@ namespace StarcounterMultiThreadTest01
                 for (long id = startlim; id < endlim; id++)
                 {
                     Person p = DbAdmin.DbGetPerson(id);
-                    //Person p = Db.SQL("SELECT P FROM Person P WHERE P.Id=?", id).First;
                     text += "Id: " + id + " Person: " + p.FullName + "<BR>";
                 }
                 return header + text;
@@ -128,7 +126,7 @@ namespace StarcounterMultiThreadTest01
 
         static void DoWork5()
         {
-            Handle.GET("/list5", () =>
+            Handle.GET(SERVER_PORT, "/list5", () =>
             {
                 DbAdministration DbAdmin = new DbAdministration();
                 string text = "";
