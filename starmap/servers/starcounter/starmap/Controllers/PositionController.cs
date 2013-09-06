@@ -20,7 +20,7 @@ namespace starmap.Controllers
         {
              Handle.POST(SERVER_PORT, "/position", (PositionMsg message) => 
              {
-                 return service.updatePostion(message);
+                 return service.updatePostion(message);                   
              });
                          
             Handle.POST(SERVER_PORT, "/register", (UserMsg user) =>
@@ -33,7 +33,12 @@ namespace starmap.Controllers
                 return service.deregister(user);
             });
 
-            Handle.GET(SERVER_PORT, "/position", (string group) =>
+            Handle.GET(SERVER_PORT, "/position", (UserMsg user) =>
+            {
+                return service.getCurrentPosition(user);
+            });
+
+            Handle.GET(SERVER_PORT, "/group", (string group) =>
             {
                 // TODO: HOW?
                 var json = new ActiveUsersMsg();

@@ -10,38 +10,45 @@ namespace starmap.Services.Implementations
 {
     public class PositionService : IPositionService
     {
-
         public const int HTTP_OK = 200;
         public const int HTTP_BAD_REQUEST = 400;
         public const int HTTP_NOT_FOUND = 404;
         public const int HTTP_CONFLICT = 409;
+        public const int HTTP_ERROR = 500;
 
         public int updatePostion(PositionMsg position)
         {
             int httpReturnCode = HTTP_OK;
 
-            Db.Transaction(() =>
+            try
             {
-                string name = position.Name;
-                TrackingObject t = (TrackingObject)Db.SQL("SELECT T FROM TrackingObject T WHERE T.Name=?", 
-                                           position.Name).First;
-
-                if (t == null || t.group == null) httpReturnCode = HTTP_NOT_FOUND;
-                else
+                Db.Transaction(() =>
                 {
-                    new Position()
-                    {
-                        trackingObject = t,
-                        latitude = position.Latitude,
-                        longitude = position.Longitude,
-                        timestamp = DateTime.Now
-                    };
+                    string name = position.Name;
+                    TrackingObject t = (TrackingObject)Db.SQL("SELECT T FROM TrackingObject T WHERE T.Name=?",
+                                               position.Name).First;
 
-                    t.currentLatitude = position.Latitude;
-                    t.currentLongitude = position.Longitude;
-                    t.group.numberOfUpdates++;
-                }
-             });
+                    if (t == null || t.group == null) httpReturnCode = HTTP_NOT_FOUND;
+                    else
+                    {
+                        new Position()
+                        {
+                            trackingObject = t,
+                            latitude = position.Latitude,
+                            longitude = position.Longitude,
+                            timestamp = DateTime.Now
+                        };
+
+                        t.currentLatitude = position.Latitude;
+                        t.currentLongitude = position.Longitude;
+                        t.group.numberOfUpdates++;
+                    }
+                });
+            }
+            catch
+            {
+                httpReturnCode = HTTP_ERROR;
+            }
 
             return httpReturnCode;
         }
@@ -102,6 +109,19 @@ namespace starmap.Services.Implementations
                  }
              });
             return HTTP_OK;
+        }
+
+        public PositionMsg getCurrentPosition(UserMsg user)
+        {
+            PositionMsg p = new PositionMsg();
+            TrackingObject t = Db.SQL<TrackingObject>("SELECT T FROM TrackingObject T WHERE T.Name=?", user.Name).First;
+
+            p.Name = user.Name;
+            p.Group = user.Group;
+            p.Latitude = t!=null? t.currentLatitude : 0;
+            p.Longitude = t!= null? t.currentLongitude : 0;
+
+            return p;
         }
 
         public IEnumerable getActiveUsersForGroup(string group)
