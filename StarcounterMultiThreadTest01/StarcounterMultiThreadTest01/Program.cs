@@ -8,10 +8,11 @@ namespace StarcounterMultiThreadTest01
 {
     class Program
     {
-        public const long maxId = 100000;
-        public const int winId =   25000;
-        public const int numberofthreads = 4;
+        public const long maxId = 1000000;
+        public const int winId =   500000;
+        public const int numberofthreads = 2;
         public const ushort SERVER_PORT = 8080;
+        private static int flag;        
         static void Main()
         {
             DbSession dbs = new DbSession();
@@ -50,41 +51,59 @@ namespace StarcounterMultiThreadTest01
         }
         static void DoWork1()
         {
-            Console.WriteLine("worker thread: insert data into table Person.");
-            DbAdministration DbAdmin = new DbAdministration();
-
-            DbAdmin.DbDelete();
-
-            for (long i = 0; i < maxId; i++)
+            Console.WriteLine("worker thread 1: insert data into table Person.");
+            if (flag == 0)
             {
-                DbAdmin.DbInsert(i, "Albert", "Einstein");
-            }
+                DbAdministration DbAdmin = new DbAdministration();
 
+                DbAdmin.DbDelete();
+
+                for (long i = 0; i < maxId; i++)
+                {
+                    DbAdmin.DbInsert(i, "Albert" + i.ToString(), "Einstein");
+                }
+                flag = 1;
+            }
             Console.WriteLine("worker thread: terminating gracefully after fill the table Person");
 
         }
 
         static void DoWork2()
         {
-            Handle.GET(SERVER_PORT, "/list2", () =>
+            string text = "";
+            long rem = 0;
+            long endlim = Math.DivRem(maxId, winId, out rem);
+            DbAdministration DbAdmin = new DbAdministration();
+
+            for (long id = 0; id < endlim; id++)
             {
-                DbAdministration DbAdmin = new DbAdministration();
-                string text = "";
-                string header;
-                header = "<!DOCTYPE html><link rel='stylesheet' href='quote.css'/><title>Hello</title>";
-                long rem = 0;
-                long uplim = Math.DivRem(maxId, winId, out rem);
-                for (long id = 0; id < uplim; id++)
-                {
-                    Person p = DbAdmin.DbGetPerson(id);
-                    text += "Id: " + id + " Person: " + p.FullName + "<BR>";
-                }
-                return header + text;
-            });
+                Person p = DbAdmin.DbGetPerson(id);
+                text += "Id: " + id + " Person: " + p.FullName + "\n";
+                Console.Write(text);
+            }
+           
+
+            //Console.WriteLine("worker thread 2: http GET list2");
+            //Handle.GET(SERVER_PORT, "/list2", () =>
+            //{
+            //    DbAdministration DbAdmin = new DbAdministration();
+            //    string text = "";
+            //    string header;
+            //    header = "<!DOCTYPE html><link rel='stylesheet' href='quote.css'/><title>Hello</title>";
+            //    long rem = 0;
+            //    long uplim = Math.DivRem(maxId, winId, out rem);
+            //    for (long id = 0; id < endlim; id++)
+            //    {
+            //        Person p = DbAdmin.DbGetPerson(id);
+            //        text += "Id: " + id + " Person: " + p.FullName + "<BR>";
+            //    }
+            //    return header + text;
+            //});
         }
 
         static void DoWork3()
         {
+            Console.WriteLine("worker thread 3: http GET list3");
             Handle.GET(SERVER_PORT, "/list3", () =>
             {
                 DbAdministration DbAdmin = new DbAdministration();
@@ -105,6 +124,7 @@ namespace StarcounterMultiThreadTest01
 
         static void DoWork4()
         {
+            Console.WriteLine("worker thread 4: http GET list4");
             Handle.GET(SERVER_PORT, "/list4", () =>
             {
                 DbAdministration DbAdmin = new DbAdministration();
