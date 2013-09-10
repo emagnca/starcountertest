@@ -10,5 +10,6 @@ namespace starmap.Services.Interfaces
         int deregister(UserMsg user);
         PositionMsg getCurrentPosition(UserMsg user);
         IEnumerable getActiveUsersForGroup(string group);
+        int deletePositionsForUser(UserMsg user);
     }
 }

@@ -31,7 +31,7 @@ namespace starmap.Services.Implementations
                     if (t == null || t.group == null) httpReturnCode = HTTP_NOT_FOUND;
                     else
                     {
-                        new Position()
+                        new PositionXY()
                         {
                             trackingObject = t,
                             latitude = position.Latitude,
@@ -57,58 +57,79 @@ namespace starmap.Services.Implementations
         {
             int httpReturnCode = HTTP_OK;
 
-            Db.Transaction(() =>
+            try
             {
-               TrackingObject t = Db.SQL<TrackingObject>("SELECT T FROM TrackingObject T WHERE T.Name=?", user.Name).First;   
-               TrackingGroup g = Db.SQL<TrackingGroup>("SELECT T FROM TrackingGroup T WHERE T.Name=?", user.Group).First;
+                Db.Transaction(() =>
+                {
+                    TrackingObject t = Db.SQL<TrackingObject>("SELECT T FROM TrackingObject T WHERE T.Name=?", user.Name).First;
+                    TrackingGroup g = Db.SQL<TrackingGroup>("SELECT T FROM TrackingGroup T WHERE T.Name=?", user.Group).First;
 
-               if (t != null)
-               {
-                   if (t.isConnected) httpReturnCode = HTTP_CONFLICT;
-                   else t.isConnected = true;
-               }
-               else
-               {
-                   if (g == null)
-                   {
-                       g = new TrackingGroup()
-                       {
-                           name = user.Group,
-                           numberOfCurrentUsers = 0,
-                           numberOfUpdates = 0
-                       };
-                   }
+                    if (t != null)
+                    {
+                        if (t.isConnected) httpReturnCode = HTTP_CONFLICT;
+                        else t.isConnected = true;
+                    }
+                    else
+                    {
+                        if (g == null)
+                        {
+                            g = new TrackingGroup()
+                            {
+                                name = user.Group,
+                                numberOfCurrentUsers = 0,
+                                numberOfUpdates = 0
+                            };
+                        }
 
-                   t = new TrackingObject()
-                   {
-                       name = user.Name,
-                       isConnected = true,
-                       lastUpdate = DateTime.Now,
-                       group = g
-                   };
+                        t = new TrackingObject()
+                        {
+                            name = user.Name,
+                            isConnected = true,
+                            lastUpdate = DateTime.Now,
+                            group = g
+                        };
 
-                   g.numberOfCurrentUsers++;
-                   g.numberOfUpdates++;
-               }
-            });
+                        g.numberOfCurrentUsers++;
+                        g.numberOfUpdates++;
+                    }
+                });
+            }
+            catch
+            {
+                httpReturnCode = HTTP_ERROR;
+            }
 
             return httpReturnCode;
         }
 
         public int deregister(UserMsg user)
         {
-            Db.Transaction(() =>
-             {
-                 TrackingObject t = Db.SQL<TrackingObject>("SELECT T FROM TrackingObject T WHERE T.Name=?", user.Name).First;
-                 TrackingGroup g = Db.SQL<TrackingGroup>("SELECT T FROM TrackingGroup T WHERE T.Name=?", user.Group).First;
+            int httpReturnCode = HTTP_OK;
+            try
+            {
+                Db.Transaction(() =>
+                {
+                    TrackingObject t = Db.SQL<TrackingObject>("SELECT T FROM TrackingObject T WHERE T.Name=?", user.Name).First;
+                    TrackingGroup g = Db.SQL<TrackingGroup>("SELECT T FROM TrackingGroup T WHERE T.Name=?", user.Group).First;
 
-                 if (t != null)
-                 {
-                     t.isConnected = false;
-                     g.numberOfCurrentUsers--;
-                 }
-             });
-            return HTTP_OK;
+                    if (t != null)
+                    {
+                        t.isConnected = false;
+                        g.numberOfCurrentUsers--;
+                    }
+
+                    foreach (PositionXY p in Db.SQL<PositionXY>("SELECT P FROM PositionXY P WHERE P.trackingObject.Name=?", user.Name))
+                    {
+                        p.Delete();
+                    }
+                });
+            }
+            catch
+            {
+                httpReturnCode = HTTP_ERROR;
+            }
+
+            return httpReturnCode;
         }
 
         public PositionMsg getCurrentPosition(UserMsg user)
@@ -122,6 +143,18 @@ namespace starmap.Services.Implementations
             p.Longitude = t!= null? t.currentLongitude : 0;
 
             return p;
+        }
+
+        public int deletePositionsForUser(UserMsg user)
+        {
+            Db.Transaction(() =>
+            {
+                foreach (PositionXY p in Db.SQL<PositionXY>("SELECT P FROM PositionXY P WHERE P.trackingObject.Name=?", user.Name))
+                {
+                    p.Delete();
+                }
+            });
+            return HTTP_OK;
         }
 
         public IEnumerable getActiveUsersForGroup(string group)

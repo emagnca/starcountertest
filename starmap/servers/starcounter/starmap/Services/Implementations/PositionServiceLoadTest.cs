@@ -33,6 +33,11 @@ namespace starmap.Services.Implementations
             return delegateService.deregister(user);
         }
 
+        public int deletePositionsForUser(UserMsg user)
+        {
+            return delegateService.deletePositionsForUser(user);
+        }
+
         public PositionMsg getCurrentPosition(UserMsg user)
         {
             return delegateService.getCurrentPosition(user);
