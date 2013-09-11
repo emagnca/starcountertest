@@ -4,6 +4,7 @@ using Starcounter;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 
 namespace starmap.Services.Implementations
@@ -16,6 +17,8 @@ namespace starmap.Services.Implementations
         public const int HTTP_CONFLICT = 409;
         public const int HTTP_ERROR = 500;
         public const int HTTP_SERVICE_UNAVAILABLE = 503;
+
+        private const string LOG_FILE = @"C:\Users\Magnus Carlhammar\StarCounterTestError.log";
 
         public int updatePostion(PositionMsg position)
         {
@@ -169,10 +172,11 @@ namespace starmap.Services.Implementations
 
         private void handleException(Exception x)
         {
-            System.Diagnostics.StackTrace trace = new System.Diagnostics.StackTrace(x, true);
-            Console.WriteLine(trace.GetFrame(0).GetMethod().ReflectedType.FullName);
-            Console.WriteLine("Line: " + trace.GetFrame(0).GetFileLineNumber());
-            Console.WriteLine("Column: " + trace.GetFrame(0).GetFileColumnNumber());
+            using (StreamWriter file = new StreamWriter(LOG_FILE, true))
+            {
+                file.Write("Exception at " + System.DateTime.Now + ": ");
+                file.WriteLine(x.Message);
+            }
         }
 
     }
