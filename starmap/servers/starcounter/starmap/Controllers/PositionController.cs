@@ -38,6 +38,11 @@ namespace starmap.Controllers
                 return service.getCurrentPosition(user);
             });
 
+            Handle.DELETE(SERVER_PORT, "/position", (UserMsg user) =>
+            {
+                return service.deletePositionsForUser(user);
+            });
+
             Handle.GET(SERVER_PORT, "/group", (string group) =>
             {
                 // TODO: HOW?

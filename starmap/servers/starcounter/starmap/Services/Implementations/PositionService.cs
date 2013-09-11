@@ -15,6 +15,7 @@ namespace starmap.Services.Implementations
         public const int HTTP_NOT_FOUND = 404;
         public const int HTTP_CONFLICT = 409;
         public const int HTTP_ERROR = 500;
+        public const int HTTP_SERVICE_UNAVAILABLE = 503;
 
         public int updatePostion(PositionMsg position)
         {
@@ -45,9 +46,10 @@ namespace starmap.Services.Implementations
                     }
                 });
             }
-            catch
+            catch (Exception x)
             {
-                httpReturnCode = HTTP_ERROR;
+                handleException(x);
+                httpReturnCode = HTTP_SERVICE_UNAVAILABLE;
             }
 
             return httpReturnCode;
@@ -94,9 +96,10 @@ namespace starmap.Services.Implementations
                     }
                 });
             }
-            catch
+            catch (Exception x)
             {
-                httpReturnCode = HTTP_ERROR;
+                handleException(x);
+                httpReturnCode = HTTP_SERVICE_UNAVAILABLE;
             }
 
             return httpReturnCode;
@@ -124,9 +127,10 @@ namespace starmap.Services.Implementations
                     }
                 });
             }
-            catch
+            catch (Exception x)
             {
-                httpReturnCode = HTTP_ERROR;
+                handleException(x);
+                httpReturnCode = HTTP_SERVICE_UNAVAILABLE;
             }
 
             return httpReturnCode;
@@ -161,6 +165,14 @@ namespace starmap.Services.Implementations
         {
             TrackingGroup g = Db.SQL<TrackingGroup>("SELECT T FROM TrackingGroup T WHERE T.Name=?", group).First;
             return g.activeUsers;
+        }
+
+        private void handleException(Exception x)
+        {
+            System.Diagnostics.StackTrace trace = new System.Diagnostics.StackTrace(x, true);
+            Console.WriteLine(trace.GetFrame(0).GetMethod().ReflectedType.FullName);
+            Console.WriteLine("Line: " + trace.GetFrame(0).GetFileLineNumber());
+            Console.WriteLine("Column: " + trace.GetFrame(0).GetFileColumnNumber());
         }
 
     }
