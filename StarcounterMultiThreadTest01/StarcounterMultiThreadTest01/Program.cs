@@ -8,11 +8,11 @@ namespace StarcounterMultiThreadTest01
 {
     class Program
     {
-        public const long maxId = 1000000;
-        public const int winId =   500000;
+        public const long maxId = 1000;
+        public const int winId =   500;
         public const int numberofthreads = 2;
         public const ushort SERVER_PORT = 8080;
-        private static int flag;        
+        private static int flag;
         static void Main()
         {
             DbSession dbs = new DbSession();
